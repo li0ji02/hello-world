@@ -8,7 +8,7 @@ You may access this solution by URL or Virtual Host.
 
 ### URL
 
-http://<your cluster>/example/hello-world/
+http://<your cluster>/example/hello-world
 
 ### Virtual Host
 
