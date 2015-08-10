@@ -64,8 +64,8 @@
         "apiVersion": "v1beta3",
         "metadata": {
           "annotations": {
-            "ca.com/cluster-public-hostname": "hw-20150317.ca.com",
-            "ca.com/cluster-public-urlpath": "/hello-world-20150317/",
+            "ca.com/cluster-public-hostname": "hello-world.example.local",
+            "ca.com/cluster-public-urlpath": "/example/hello-world/",
             "description": "Public service to expose Hello World"
           },
           "labels": {
