@@ -65,6 +65,8 @@
         "metadata": {
           "annotations": {
             "ca.com/cluster-public-hostname": "hello-world.example.local",
+            "ca.com/cluster-public-url": "/example/hello-world",
+            "ca.com/cluster-public-urltext": "UI",
             "ca.com/cluster-public-urlpath": "/example/hello-world",
             "description": "Public service to expose Hello World"
           },
