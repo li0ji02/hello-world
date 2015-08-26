@@ -1,93 +1,84 @@
 {
-  "id": "hello-world-2015-03",
-  "name": "Hello World",
-  "replicationControllerList": {
-    "apiVersion": "v1beta3",
-    "items": [
-      {
-        "metadata": {
-          "annotations": {
-            "description": "Hello World Replication Controller"
-          },
-          "labels": {
-            "ca.com/hello-world": "web"
-          },
-          "name": "hello-web-rc",
-          "namespace": "example"
-        },
-        "spec": {
-          "replicas": 1,
-          "selector": {
-            "ca.com/hello-world": "web"
-          },
-          "template": {
-            "metadata": {
-              "annotations": {
-                "description": "Hello World Pod"
-              },
-              "labels": {
-                "ca.com/hello-world": "web"
-              },
-              "name": "web",
-              "namespace": "example"
-            },
-            "spec": {
-              "containers": [
-                {
-                  "image": "adejonge/helloworld",
-                  "livenessProbe": {
-                    "httpGet": {
-                      "path": "/",
-                      "port": 8080
-                    },
-                    "initialDelaySeconds": 30
-                  },
-                  "name": "web",
-                  "ports": [
-                    {
-                      "containerPort": 8080
-                    }
-                  ]
-                }
-              ],
-              "dnsPolicy": "ClusterFirst",
-              "restartPolicy": "Always"
-            }
-          }
-        }
-      }
-    ]
+  "apiVersion": "v1",
+  "kind": "Template",
+  "metadata": {
+    "annotations": {
+      "description": "Hello World"
+    },
+    "creationTimestamp": null,
+    "name": "hello-world-2015-03",
+    "namespace": "example"
   },
-  "serviceList": {
-    "items": [
-      {
-        "apiVersion": "v1beta3",
-        "metadata": {
-          "annotations": {
-            "ca.com/cluster-public-hostname": "hello-world.example.local",
-            "ca.com/cluster-public-url": "/example/hello-world",
-            "ca.com/cluster-public-urltext": "UI",
-            "ca.com/cluster-public-urlpath": "/example/hello-world",
-            "description": "Public service to expose Hello World"
-          },
-          "labels": {
-            "ca.com/cluster-public-service": "true"
-          },
-          "name": "hello-world",
-          "namespace": "example"
+  "objects": [
+    {
+      "apiVersion": "v1",
+      "kind": "ReplicationController",
+      "metadata": {
+        "name": "hello-web"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "ca.com/hello-world": "web"
         },
-        "spec": {
-          "ports": [
-            {
-              "port": 80,
-              "targetPort": 8080
-            }
-          ],
-          "selector": {
-            "ca.com/hello-world": "web"
+        "template": {
+          "metadata": {
+            "labels": {
+              "ca.com/hello-world": "web"
+            },
+            "name": "web"
+          },
+          "spec": {
+            "containers": [
+              {
+                "image": "adejonge/helloworld",
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/",
+                    "port": 8080
+                  },
+                  "initialDelaySeconds": 30
+                },
+                "name": "web",
+                "ports": [
+                  {
+                    "containerPort": 8080
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "restartPolicy": "Always"
           }
         }
       }
-    ]
-  }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "ca.com/cluster-public-hostname": "hello-world.example.local",
+          "ca.com/cluster-public-url": "/example/hello-world",
+          "ca.com/cluster-public-urlpath": "/example/hello-world",
+          "ca.com/cluster-public-urltext": "UI"
+        },
+        "labels": {
+          "ca.com/cluster-public-service": "http"
+        },
+        "name": "hello-world"
+      },
+      "spec": {
+        "ports": [
+          {
+            "port": 80,
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "ca.com/hello-world": "web"
+        }
+      }
+    }
+  ]
 }
