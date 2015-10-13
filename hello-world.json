@@ -1,0 +1,98 @@
+{
+  "apiVersion": "v1",
+  "kind": "Template",
+  "metadata": {
+    "annotations": {
+      "description": "Hello World",
+      "ca.com/securecenter-solution-multi-deployable": "true"
+    },
+    "creationTimestamp": null,
+    "name": "hello-world-2015-03",
+    "namespace": "example"
+  },
+  "objects": [
+    {
+      "apiVersion": "v1",
+      "kind": "ReplicationController",
+      "metadata": {
+        "name": "hello-web"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "ca.com/hello-world": "web"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "ca.com/hello-world": "web"
+            },
+            "name": "web"
+          },
+          "spec": {
+            "containers": [
+              {
+                "env": [
+                  {
+                    "name": "HELLO_MESSAGE",
+                    "value": "Hello ${CUSTOMER_NAME}. I'm running in namespace: ${SOLUTION_NAMESPACE}"
+                  }
+                ],
+                "image": "store.vapp-security.solutions/vapp/hello-world:latest",
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/",
+                    "port": 8080
+                  },
+                  "initialDelaySeconds": 30
+                },
+                "name": "web",
+                "ports": [
+                  {
+                    "containerPort": 8080
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "restartPolicy": "Always"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "ca.com/cluster-public-hostname": "hello-world.${SOLUTION_NAMESPACE}.local",
+          "ca.com/cluster-public-url": "/${SOLUTION_NAMESPACE}/hello-world",
+          "ca.com/cluster-public-urlpath": "/${SOLUTION_NAMESPACE}/hello-world",
+          "ca.com/cluster-public-urltext": "UI"
+        },
+        "labels": {
+          "ca.com/cluster-public-service": "http"
+        },
+        "name": "hello-world"
+      },
+      "spec": {
+        "ports": [
+          {
+            "port": 80,
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "ca.com/hello-world": "web"
+        }
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "description": "The name of the customer",
+      "name": "CUSTOMER_NAME",
+      "value": "ForwardInc"
+    }
+  ]
+}
